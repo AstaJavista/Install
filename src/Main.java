@@ -5,86 +5,23 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 public class Main {
+
     public static void main(String[] args) {
         StringBuilder sb = new StringBuilder();
 
-        File dirSrc = new File("D://Games/src");
-        if (dirSrc.mkdir()) {
-            sb.append("Создана директория ").append(dirSrc.getName());
-            sb.append("\r\n");
-        }
-        File dirRes = new File("D://Games/res");
-        if (dirRes.mkdir()) {
-            sb.append("Создана директория ").append(dirRes.getName());
-            sb.append("\r\n");
-        }
-        File dirSave = new File("D://Games/savegames");
-        if (dirSave.mkdir()) {
-            sb.append("Создана директория ").append(dirSave.getName());
-            sb.append("\r\n");
-        }
-        File dirTemp = new File("D://Games/temp");
-        if (dirTemp.mkdir()) {
-            sb.append("Создана директория ").append(dirTemp.getName());
-            sb.append("\r\n");
-        }
+        File dirSrc = dirCreate("D://Games/src", sb);
+        File dirRes = dirCreate("D://Games/res", sb);
+        File dirSave = dirCreate("D://Games/savegames", sb);
+        File dirTemp = dirCreate("D://Games/temp", sb);
+        File dirMain = dirCreate("D://Games/src/main", sb);
+        File dirTest = dirCreate("D://Games/src/test", sb);
 
-        File dirMain = new File("D://Games/src/main");
-        if (dirMain.mkdir()) {
-            sb.append("Создана директория ").append(dirMain.getName());
-            sb.append("\r\n");
-        }
-        File dirTest = new File("D://Games/src/test");
-        if (dirTest.mkdir()) {
-            sb.append("Создана директория ").append(dirTest.getName());
-            sb.append("\r\n");
-        }
-
-        File fileMain = new File(dirMain, "Main.java");
-        try {
-            if (fileMain.createNewFile())
-                sb.append("Создан файл ").append(fileMain.getName());
-            sb.append("\r\n");
-        } catch (IOException e) {
-            sb.append("Файл ").append(fileMain.getName()).append(" не создан");
-            sb.append("\r\n");
-        }
-
-        File fileUtils = new File(dirMain, "Utils.java");
-        try {
-            if (fileUtils.createNewFile())
-                sb.append("Создан файл ").append(fileUtils.getName());
-            sb.append("\r\n");
-        } catch (IOException e) {
-            sb.append("Файл ").append(fileUtils.getName()).append(" не создан");
-            sb.append("\r\n");
-        }
-
-        File dirDrawables = new File(dirRes, "drawables");
-        if (dirDrawables.mkdir()) {
-            sb.append("Создана директория ").append(dirDrawables.getName());
-            sb.append("\r\n");
-        }
-        File dirVectors = new File(dirRes, "vectors");
-        if (dirVectors.mkdir()) {
-            sb.append("Создана директория ").append(dirVectors.getName());
-            sb.append("\r\n");
-        }
-        File dirIcons = new File(dirRes, "icons");
-        if (dirIcons.mkdir()) {
-            sb.append("Создана директория ").append(dirIcons.getName());
-            sb.append("\r\n");
-        }
-
-        File fileTemp = new File(dirTemp, "temp.txt");
-        try {
-            if (fileTemp.createNewFile())
-                sb.append("Создан файл ").append(fileTemp.getName());
-            sb.append("\r\n");
-        } catch (IOException e) {
-            sb.append("Файл ").append(fileTemp.getName()).append(" не создан");
-            sb.append("\r\n");
-        }
+        File fileMain = fileCreate(dirMain, "Main.java", sb);
+        File fileUtils = fileCreate(dirMain, "Utils.java", sb);
+        File dirDrawables = dirCreate("D://Games/res/drawables", sb);
+        File dirVectors = dirCreate("D://Games/res/vectors", sb);
+        File dirIcons = dirCreate("D://Games/res/icons", sb);
+        File fileTemp = fileCreate(dirTemp, "temp.txt", sb);
 
         try (FileWriter writer = new FileWriter(fileTemp, true)) {
             writer.append(sb);
@@ -107,6 +44,25 @@ public class Main {
         saves.add("D://Games/savegames/save3.dat");
 
         zipFiles("D://Games/savegames/zip.zip", saves);
+    }
+
+    public static File dirCreate(String path, StringBuilder sb) {
+        File dir = new File(path);
+        if (dir.mkdir()) {
+            sb.append("Создана директория ").append(dir.getName()).append("\r\n");
+        }
+        return dir;
+    }
+
+    public static File fileCreate(File dir, String name, StringBuilder sb) {
+        File file = new File(dir, name);
+        try {
+            if (file.createNewFile())
+                sb.append("Создан файл ").append(file.getName()).append("\r\n");
+        } catch (IOException e) {
+            sb.append("Файл ").append(file.getName()).append(" не создан").append("\r\n");
+        }
+        return file;
     }
 
     public static void saveGame(String path, GameProgress save) {
